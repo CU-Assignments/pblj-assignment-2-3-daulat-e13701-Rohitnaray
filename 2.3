@@ -1,0 +1,85 @@
+import java.util.*;
+import java.util.stream.*;
+
+class Employee {
+    String name;
+    int age;
+    double salary;
+
+    Employee(String name, int age, double salary) {
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
+    }
+
+    public String toString() {
+        return name + " (Age: " + age + ", Salary: " + salary + ")";
+    }
+}
+
+class Student {
+    String name;
+    double marks;
+
+    Student(String name, double marks) {
+        this.name = name;
+        this.marks = marks;
+    }
+
+    public String toString() {
+        return name + " (Marks: " + marks + ")";
+    }
+}
+
+class Product {
+    String category;
+    String name;
+    double price;
+
+    Product(String category, String name, double price) {
+        this.category = category;
+        this.name = name;
+        this.price = price;
+    }
+}
+
+public class DataProcessor {
+    public static void main(String[] args) {
+        List<Employee> employees = Arrays.asList(
+            new Employee("Alice", 30, 50000),
+            new Employee("Bob", 25, 60000),
+            new Employee("Charlie", 35, 45000)
+        );
+
+        employees.sort(Comparator.comparingDouble(emp -> emp.salary));
+        System.out.println("Sorted Employees by Salary:");
+        employees.forEach(System.out::println);
+
+        List<Student> students = Arrays.asList(
+            new Student("John", 85),
+            new Student("Jane", 65),
+            new Student("Doe", 78)
+        );
+
+        System.out.println("\nStudents scoring above 75%:");
+        students.stream()
+            .filter(student -> student.marks > 75)
+            .sorted(Comparator.comparingDouble(student -> -student.marks))
+            .forEach(System.out::println);
+
+        List<Product> products = Arrays.asList(
+            new Product("Electronics", "TV", 700),
+            new Product("Electronics", "Laptop", 1200),
+            new Product("Furniture", "Sofa", 300),
+            new Product("Furniture", "Table", 150)
+        );
+
+        System.out.println("\nMost Expensive Product in Each Category:");
+        products.stream()
+            .collect(Collectors.groupingBy(p -> p.category, Collectors.maxBy(Comparator.comparingDouble(p -> p.price))))
+            .forEach((category, product) -> System.out.println(category + ": " + product.get().name));
+
+        double avgPrice = products.stream().mapToDouble(p -> p.price).average().orElse(0.0);
+        System.out.println("\nAverage Product Price: " + avgPrice);
+    }
+}
